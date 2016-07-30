@@ -157,10 +157,8 @@ py_test(
 
 cc_library(
     name = "python_op_gen",
-    srcs = [
-        "framework/python_op_gen.cc",
-        "framework/python_op_gen.h",
-    ],
+    srcs = ["framework/python_op_gen.cc"],
+    hdrs = ["framework/python_op_gen.h"],
     visibility = ["//visibility:public"],
     deps = [
         "//tensorflow/core:framework",
@@ -745,6 +743,7 @@ tf_gen_op_wrapper_py(
     name = "script_ops",
     hidden = [
         "PyFunc",
+        "PyFuncStateless",
     ],
     require_shape_functions = True,
 )
@@ -1266,11 +1265,22 @@ cuda_py_tests(
             "training/server_lib_test.py",
             "training/session_manager_test.py",
             "training/supervisor_test.py",
+            "training/saver_test.py",
         ],
     ),
     additional_deps = [
         ":training",
     ],
+)
+
+cuda_py_test(
+    name = "saver_test",
+    size = "small",
+    srcs = ["training/saver_test.py"],
+    additional_deps = [
+        ":training",
+    ],
+    tags = ["notsan"],  # http://b/30379628
 )
 
 cuda_py_test(
